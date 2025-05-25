@@ -15,7 +15,7 @@ export default function Navbar() {
         backgroundImage: `url('/navbar-pattern.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        height: '50px'
+        height: '60px'
       }}
     >
       <Link href="/">
@@ -28,12 +28,15 @@ export default function Navbar() {
         {user ? (
           <>
             <Link href="/profile" className="hover:underline text-sm">Profile</Link>
+            {user.isAdmin && (
+              <Link href="/admin" className="hover:underline text-sm">Admin</Link>
+            )}
             <button onClick={logout} className="hover:underline text-sm text-purple-600">Logout</button>
           </>
         ) : (
           <>
             <Link href="/login" className="hover:underline text-sm">Login</Link>
-            <Link href="/register" className="hover:underline text-sm">Sign-up</Link>
+            <Link href="/register" className="hover:underline text-sm">Sign Up</Link>
           </>
         )}
         <DonateButton />

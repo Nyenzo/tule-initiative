@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
 import { auth, signInWithEmailAndPassword, signInWithPopup, getGoogleProvider } from '../../lib/firebase';
@@ -9,8 +9,14 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && user) {
+      router.push('/dashboard');
+    }
+  }, [user, loading, router]);
 
   const handleEmailLogin = async (e) => {
     e.preventDefault();
@@ -22,22 +28,20 @@ export default function Login() {
     }
   };
 
-const handleGoogleLogin = async () => {
-  try {
-    console.log('Starting Google sign-in');
-    const provider = getGoogleProvider();
-    const result = await signInWithPopup(auth, provider);
-    console.log('Google sign-in completed', result);
-    router.push('/dashboard');
-  } catch (err) {
-    setError(`Google sign-in failed: ${err.message}`);
-  }
-};
+  const handleGoogleLogin = async () => {
+    try {
+      console.log('Starting Google sign-in');
+      const provider = getGoogleProvider();
+      const result = await signInWithPopup(auth, provider);
+      console.log('Google sign-in completed', result);
+      router.push('/dashboard');
+    } catch (err) {
+      setError(`Google sign-in failed: ${err.message}`);
+    }
+  };
 
-  if (user) {
-    router.push('/dashboard');
-    return null;
-  }
+  if (loading) return <div className="min-h-screen bg-gray-100 p-8">Loading...</div>;
+  if (user) return null;
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
@@ -86,7 +90,7 @@ const handleGoogleLogin = async () => {
           <a href="/reset-password" className="text-purple-600 hover:underline">Reset Password</a>
         </p>
         <p className="mt-2 text-center">
-          Don’t have an account? <a href="/register" className="text-purple-600 hover:underline">Register</a>
+          Don’t have an account? <a href="/register" className="text-purple-600 hover:underline">Sign Up</a>
         </p>
       </div>
     </div>

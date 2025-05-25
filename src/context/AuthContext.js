@@ -11,12 +11,14 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
+        const idTokenResult = await firebaseUser.getIdTokenResult();
         setUser({
           email: firebaseUser.email,
           name: firebaseUser.displayName || firebaseUser.email.split('@')[0],
-          emailVerified: firebaseUser.emailVerified
+          emailVerified: firebaseUser.emailVerified,
+          isAdmin: idTokenResult.claims.isAdmin || false
         });
       } else {
         setUser(null);
