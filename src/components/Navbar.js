@@ -23,14 +23,15 @@ export default function Navbar() {
       </Link>
       <div className="space-x-4">
         <Link href="/about" className="hover:underline text-sm">Who We Are</Link>
+        {user?.isAdmin && <Link href="/edit-content/about" className="hover:underline text-sm text-purple-600">[Edit]</Link>}
         <Link href="/projects" className="hover:underline text-sm">What We Do</Link>
+        {user?.isAdmin && <Link href="/edit-content/projects" className="hover:underline text-sm text-purple-600">[Edit]</Link>}
         <Link href="/media" className="hover:underline text-sm">Media</Link>
+        {user?.isAdmin && <Link href="/edit-content/media" className="hover:underline text-sm text-purple-600">[Edit]</Link>}
         {user ? (
           <>
             <Link href="/profile" className="hover:underline text-sm">Profile</Link>
-            {user.isAdmin && (
-              <Link href="/admin" className="hover:underline text-sm">Admin</Link>
-            )}
+            {user.isAdmin && <Link href="/admin" className="hover:underline text-sm">Admin</Link>}
             <button onClick={logout} className="hover:underline text-sm text-purple-600">Logout</button>
           </>
         ) : (

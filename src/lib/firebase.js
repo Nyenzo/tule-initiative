@@ -1,6 +1,8 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut, GoogleAuthProvider, signInWithPopup, updateProfile } from 'firebase/auth';
 import { getAnalytics, isSupported } from 'firebase/analytics';
+import { getFirestore } from 'firebase/firestore'; // Add Firestore
+import { getFunctions } from 'firebase/functions';
 
 // Firebase configuration using environment variables
 const firebaseConfig = {
@@ -18,6 +20,8 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase Authentication
 const auth = getAuth(app);
+const db = getFirestore(app); // Initialize Firestore
+const functions = getFunctions(app);
 
 // Initialize Analytics only on the client side
 let analytics = null;
@@ -38,4 +42,4 @@ const getGoogleProvider = () => {
   return provider;
 };
 
-export { auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut, getGoogleProvider, signInWithPopup, updateProfile, analytics };
+export { auth, db, functions, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut, getGoogleProvider, signInWithPopup, updateProfile, analytics };

@@ -1,16 +1,39 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { db } from '../../lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+
 export default function Media() {
+  const [pageData, setPageData] = useState({ title: '', content: '' });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const docRef = doc(db, 'pages', 'media');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setPageData(docSnap.data());
+        } else {
+          setPageData({ title: 'Media', content: 'Content not found.' });
+        }
+      } catch (error) {
+        console.error('Error fetching page data:', error);
+        setPageData({ title: 'Media', content: 'Error loading content.' });
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (loading) return <div className="min-h-screen bg-gray-100 p-8">Loading...</div>;
+
   return (
-    <div className="min-h-screen bg-yellow-50 py-12">
-      <section className="max-w-4xl mx-auto px-4">
-        <h1 className="text-4xl font-bold text-blue-800 mb-6 text-center">Media</h1>
-        <p className="text-lg text-gray-700 mb-4">
-          Explore our media gallery showcasing Tule Initiative’s events and projects.
-        </p>
-        <p className="text-lg text-gray-700">
-          [Placeholder: Media gallery will be added here, including photos and videos from events
-          like "Colours of The Wind."]
-        </p>
-      </section>
+    <div className="min-h-screen bg-gray-100 p-8">
+      <h1 className="text-3xl font-bold text-blue-800 mb-4">{pageData.title}</h1>
+      <p className="text-gray-700">{pageData.content}</p>
     </div>
   );
 }

@@ -1,18 +1,39 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { db } from '../../lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
+
 export default function About() {
+  const [pageData, setPageData] = useState({ title: '', content: '' });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const docRef = doc(db, 'pages', 'about');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setPageData(docSnap.data());
+        } else {
+          setPageData({ title: 'Who We Are', content: 'Content not found.' });
+        }
+      } catch (error) {
+        console.error('Error fetching page data:', error);
+        setPageData({ title: 'Who We Are', content: 'Error loading content.' });
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (loading) return <div className="min-h-screen bg-gray-100 p-8">Loading...</div>;
+
   return (
-    <div className="min-h-screen bg-white py-12">
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl sm:text-4xl font-bold text-blue-800 mb-6 text-center">Who We Are</h1>
-        <p className="text-lg text-gray-700 mb-4">
-          Tule Initiative was founded with the vision of uniting communities through shared purpose
-          and talent. Inspired by the Swahili phrase "Tule" (let's eat), we bring people together to
-          celebrate diversity, foster collaboration, and address social challenges.
-        </p>
-        <p className="text-lg text-gray-700 mb-4">
-          Our team consists of passionate individuals from various backgrounds, dedicated to creating
-          meaningful impact through community-driven projects.
-        </p>
-      </section>
+    <div className="min-h-screen bg-gray-100 p-8">
+      <h1 className="text-3xl font-bold text-blue-800 mb-4">{pageData.title}</h1>
+      <p className="text-gray-700">{pageData.content}</p>
     </div>
   );
 }
