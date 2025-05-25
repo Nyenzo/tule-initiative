@@ -40,6 +40,7 @@ export default function Navbar() {
             <Link href="/register" className="hover:underline text-sm">Sign Up</Link>
           </>
         )}
+        {user?.isAdmin && <Link href="/donations" className="hover:underline text-sm">Donations</Link>}
         <DonateButton />
       </div>
     </nav>

@@ -1,8 +1,8 @@
 'use client';
 
-import { createContext, useState, useEffect, useContext } from 'react';
-import { auth, signOut } from '../lib/firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import { useState, useEffect, createContext, useContext } from 'react';
+import { auth } from '../lib/firebase';
+import { onAuthStateChanged, getIdTokenResult } from 'firebase/auth';
 
 const AuthContext = createContext();
 
@@ -12,33 +12,38 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      console.log('onAuthStateChanged fired:', firebaseUser); // Debug auth state changes
       if (firebaseUser) {
-        const idTokenResult = await firebaseUser.getIdTokenResult();
-        setUser({
-          email: firebaseUser.email,
-          name: firebaseUser.displayName || firebaseUser.email.split('@')[0],
-          emailVerified: firebaseUser.emailVerified,
-          isAdmin: idTokenResult.claims.isAdmin || false
-        });
+        try {
+          const tokenResult = await getIdTokenResult(firebaseUser);
+          // Use the full firebaseUser object and add custom claims
+          setUser({
+            ...firebaseUser, // Spread all properties including uid
+            isAdmin: tokenResult.claims.isAdmin || false,
+          });
+        } catch (error) {
+          console.error('Error fetching token result:', error);
+          setUser(null); // Fallback if token fetch fails
+        }
       } else {
         setUser(null);
       }
       setLoading(false);
+    }, (error) => {
+      console.error('Auth state error:', error);
+      setUser(null);
+      setLoading(false);
     });
-
     return () => unsubscribe();
   }, []);
 
-  const logout = async () => {
-    await signOut(auth);
-    setUser(null);
-  };
-
   return (
-    <AuthContext.Provider value={{ user, logout, loading }}>
+    <AuthContext.Provider value={{ user, loading }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export function useAuth() {
+  return useContext(AuthContext);
+}
