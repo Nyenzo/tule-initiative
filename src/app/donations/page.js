@@ -54,6 +54,7 @@ export default function Donations() {
             <tr className="bg-gray-200">
               <th className="p-2">User ID</th>
               <th className="p-2">Amount</th>
+              <th className="p-2">Payment Method</th>
               <th className="p-2">Date</th>
               <th className="p-2">Status</th>
               <th className="p-2">Transaction ID</th>
@@ -64,6 +65,7 @@ export default function Donations() {
               <tr key={donation.id} className="border-b">
                 <td className="p-2">{donation.userId}</td>
                 <td className="p-2">${donation.amount.toFixed(2)}</td>
+                <td className="p-2">{donation.paymentMethod || 'N/A'}</td>
                 <td className="p-2">{donation.timestamp?.toDate().toLocaleString() || 'N/A'}</td>
                 <td className="p-2">{donation.status}</td>
                 <td className="p-2">{donation.transactionId || 'N/A'}</td>
