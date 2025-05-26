@@ -32,7 +32,15 @@ export default function Navbar() {
           <>
             <Link href="/profile" className="hover:underline text-sm">Profile</Link>
             {user.isAdmin && <Link href="/admin" className="hover:underline text-sm">Admin</Link>}
-            <button onClick={logout} className="hover:underline text-sm text-purple-600">Logout</button>
+            <button
+              onClick={async () => {
+                await logout();
+                console.log('Logout button clicked');
+              }}
+              className="hover:underline text-sm text-purple-600"
+            >
+              Logout
+            </button>
           </>
         ) : (
           <>

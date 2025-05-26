@@ -2,7 +2,7 @@
 
 import { useState, useEffect, createContext, useContext } from 'react';
 import { auth } from '../lib/firebase';
-import { onAuthStateChanged, getIdTokenResult } from 'firebase/auth';
+import { onAuthStateChanged, getIdTokenResult, signOut } from 'firebase/auth';
 
 const AuthContext = createContext();
 
@@ -12,21 +12,21 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      console.log('onAuthStateChanged fired:', firebaseUser); // Debug auth state changes
+      console.log('onAuthStateChanged fired:', firebaseUser);
       if (firebaseUser) {
         try {
           const tokenResult = await getIdTokenResult(firebaseUser);
-          // Use the full firebaseUser object and add custom claims
           setUser({
-            ...firebaseUser, // Spread all properties including uid
+            ...firebaseUser,
             isAdmin: tokenResult.claims.isAdmin || false,
           });
         } catch (error) {
           console.error('Error fetching token result:', error);
-          setUser(null); // Fallback if token fetch fails
+          setUser(null);
         }
       } else {
         setUser(null);
+        console.log('User set to null after logout');
       }
       setLoading(false);
     }, (error) => {
@@ -37,8 +37,17 @@ export function AuthProvider({ children }) {
     return () => unsubscribe();
   }, []);
 
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      console.log('Logout successful');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading }}>
+    <AuthContext.Provider value={{ user, loading, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -27,51 +27,51 @@ export default function DonateButton() {
     });
   };
 
-  const handleDonate = async (e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
-    // Log state at form submission
-    console.log('handleDonate state:', { user, authLoading });
-    if (authLoading) {
-      setError('Authentication is still loading. Please wait.');
-      return;
-    }
-    if (!user) {
-      setError('Please log in to donate.');
-      return;
-    }
-    if (!amount || isNaN(amount) || amount <= 0) {
-      setError('Please enter a valid amount.');
-      return;
-    }
+const handleDonate = async (e) => {
+  e.preventDefault();
+  setError('');
+  setSuccess('');
+  console.log('handleDonate state:', { user, authLoading });
+  if (authLoading) {
+    setError('Authentication is still loading. Please wait.');
+    return;
+  }
+  if (!user) {
+    setError('Please log in to donate.');
+    return;
+  }
+  if (!amount || isNaN(amount) || amount <= 0) {
+    setError('Please enter a valid amount.');
+    return;
+  }
 
-    setIsConfirming(true);
-    try {
-      const result = await simulateTransaction(amount);
-      if (!result.success) {
-        throw new Error('Transaction failed. Please try again.');
-      }
-      // Debug user before addDoc
-      console.log('User before addDoc:', user);
-      if (!user.uid) {
-        throw new Error('User UID is undefined. Please log in again.');
-      }
-      await addDoc(collection(db, 'donations'), {
-        userId: user.uid,
-        amount: parseFloat(amount),
-        timestamp: serverTimestamp(),
-        status: 'completed',
-        transactionId: result.transactionId,
-      });
-      setSuccess('Donation confirmed and recorded!');
-      setAmount('');
-    } catch (err) {
-      setError(`Error: ${err.message}`);
-    } finally {
-      setIsConfirming(false);
+  setIsConfirming(true);
+  try {
+    const result = await simulateTransaction(amount);
+    if (!result.success) {
+      throw new Error('Transaction failed. Please try again.');
     }
-  };
+    console.log('User before addDoc:', user);
+    if (!user.uid) {
+      throw new Error('User UID is undefined. Please log in again.');
+    }
+    const donationData = {
+      userId: user.uid,
+      amount: parseFloat(amount),
+      timestamp: serverTimestamp(),
+      status: 'completed',
+      transactionId: result.transactionId,
+    };
+    console.log('Donation data before addDoc:', donationData);
+    await addDoc(collection(db, 'donations'), donationData);
+    setSuccess('Donation confirmed and recorded!');
+    setAmount('');
+  } catch (err) {
+    setError(`Error: ${err.message}`);
+  } finally {
+    setIsConfirming(false);
+  }
+};
 
   if (authLoading) return null;
 
