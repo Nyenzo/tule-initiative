@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut, GoogleAuthProvider, signInWithPopup, updateProfile } from 'firebase/auth';
-import { getAnalytics, isSupported } from 'firebase/analytics';
+import { getAnalytics, isSupported, logEvent } from 'firebase/analytics';
 import { getFirestore } from 'firebase/firestore'; // Add Firestore
 import { getFunctions } from 'firebase/functions';
 
@@ -40,6 +40,14 @@ const getGoogleProvider = () => {
     prompt: 'select_account'
   });
   return provider;
+};
+
+// Helper function to log analytics events safely
+export const logAnalyticsEvent = (eventName, eventParams = {}) => {
+  if (analytics && typeof window !== 'undefined') {
+    logEvent(analytics, eventName, eventParams);
+    console.log(`Analytics event logged: ${eventName}`, eventParams);
+  }
 };
 
 export { auth, db, functions, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signOut, getGoogleProvider, signInWithPopup, updateProfile, analytics };

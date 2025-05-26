@@ -3,13 +3,13 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
-import { auth, signInWithEmailAndPassword, signInWithPopup, getGoogleProvider } from '../../lib/firebase';
+import { auth, signInWithEmailAndPassword, signInWithPopup, getGoogleProvider, logAnalyticsEvent } from '../../lib/firebase';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [googleLoading, setGoogleLoading] = useState(false); // Add loading state
+  const [googleLoading, setGoogleLoading] = useState(false);
   const { user, loading } = useAuth();
   const router = useRouter();
 
@@ -21,9 +21,9 @@ export default function Login() {
 
   const handleEmailLogin = async (e) => {
     e.preventDefault();
-    console.log('Attempting login with:', { email, password });
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      logAnalyticsEvent('login', { method: 'email', user_id: auth.currentUser.uid });
       router.push('/dashboard');
     } catch (err) {
       setError(`Login failed: ${err.message}`);
@@ -32,14 +32,13 @@ export default function Login() {
   };
 
   const handleGoogleLogin = async () => {
-    if (googleLoading) return; // Prevent multiple clicks
+    if (googleLoading) return;
     setGoogleLoading(true);
-    setError(''); // Clear previous errors
+    setError('');
     try {
-      console.log('Starting Google sign-in');
       const provider = getGoogleProvider();
       const result = await signInWithPopup(auth, provider);
-      console.log('Google sign-in completed', result.user);
+      logAnalyticsEvent('login', { method: 'google', user_id: result.user.uid });
       router.push('/dashboard');
     } catch (err) {
       if (err.code === 'auth/popup-blocked') {

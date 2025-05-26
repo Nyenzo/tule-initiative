@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../../context/AuthContext';
-import { db } from '../../../lib/firebase';
-import { collection, query, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
+import { db, logAnalyticsEvent } from '../../../lib/firebase';
+import { collection, query, getDocs, doc, setDoc } from 'firebase/firestore';
 import Link from 'next/link';
 
 export default function AdminUsers() {
@@ -43,7 +43,8 @@ export default function AdminUsers() {
       const userRef = doc(db, 'users', userId);
       await setDoc(userRef, { isAdmin: !currentIsAdmin }, { merge: true });
       setSuccess(`User ${userId} updated successfully`);
-      fetchUsers(); // Refresh the user list
+      logAnalyticsEvent('admin_toggle', { action: currentIsAdmin ? 'remove_admin' : 'make_admin', target_user_id: userId, admin_id: user.uid });
+      fetchUsers();
     } catch (err) {
       setError(`Failed to update user: ${err.message}`);
       setSuccess('');
@@ -65,7 +66,8 @@ export default function AdminUsers() {
       const userRef = doc(db, 'users', userId);
       await deleteDoc(userRef);
       setSuccess(`User ${userId} deleted successfully`);
-      fetchUsers(); // Refresh the user list
+      logAnalyticsEvent('admin_delete_user', { target_user_id: userId, admin_id: user.uid });
+      fetchUsers();
     } catch (err) {
       setError(`Failed to delete user: ${err.message}`);
       setSuccess('');

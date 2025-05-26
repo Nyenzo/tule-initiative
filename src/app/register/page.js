@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
-import { auth, createUserWithEmailAndPassword, sendEmailVerification, signInWithPopup, getGoogleProvider } from '../../lib/firebase';
+import { auth, createUserWithEmailAndPassword, sendEmailVerification, signInWithPopup, getGoogleProvider, logAnalyticsEvent } from '../../lib/firebase';
 
 export default function Register() {
   const [email, setEmail] = useState('');
@@ -24,19 +24,23 @@ export default function Register() {
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       await sendEmailVerification(userCredential.user);
+      logAnalyticsEvent('sign_up', { method: 'email', user_id: userCredential.user.uid });
       router.push('/dashboard');
     } catch (err) {
       setError(`Registration failed: ${err.message}`);
+      console.error('Registration error:', err.code, err.message, err.stack);
     }
   };
 
   const handleGoogleRegister = async () => {
     try {
       const provider = getGoogleProvider();
-      await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(auth, provider);
+      logAnalyticsEvent('sign_up', { method: 'google', user_id: result.user.uid });
       router.push('/dashboard');
     } catch (err) {
       setError(`Google registration failed: ${err.message}`);
+      console.error('Google registration error:', err.code, err.message, err.stack);
     }
   };
 
