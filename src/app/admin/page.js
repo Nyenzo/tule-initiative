@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../context/AuthContext';
 import { getFunctions, httpsCallable } from 'firebase/functions';
+import Link from 'next/link';
 
 export default function AdminDashboard() {
   const { user, loading } = useAuth();
@@ -38,11 +39,11 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <h1 className="text-3xl font-bold text-blue-800 mb-4">Admin Dashboard</h1>
-      <p className="text-gray-700 mb-4">Welcome, {user.name}! You have admin privileges.</p>
+      <p className="text-gray-700 mb-4">Welcome, {user.name || 'Admin'}! You have admin privileges.</p>
       <h2 className="text-xl font-semibold text-blue-800 mb-2">Assign Admin Role</h2>
       {message && <p className="text-green-500 mb-4">{message}</p>}
       {error && <p className="text-red-500 mb-4">{error}</p>}
-      <form onSubmit={handleSetAdmin} className="bg-white p-6 rounded-lg shadow-lg max-w-md">
+      <form onSubmit={handleSetAdmin} className="bg-white p-6 rounded-lg shadow-lg max-w-md mb-6">
         <div className="mb-4">
           <label className="block text-gray-700">User Email</label>
           <input
@@ -57,6 +58,14 @@ export default function AdminDashboard() {
           Make Admin
         </button>
       </form>
+      <h2 className="text-xl font-semibold text-blue-800 mb-2">Manage Users</h2>
+      <Link href="/admin/users" className="text-blue-600 hover:underline">
+        View User List
+      </Link>
+      <h2 className="text-xl font-semibold text-blue-800 mb-2 mt-4">Donations</h2>
+      <Link href="/donations" className="text-blue-600 hover:underline">
+        View Donations
+      </Link>
     </div>
   );
 }

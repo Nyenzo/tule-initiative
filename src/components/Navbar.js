@@ -31,7 +31,7 @@ export default function Navbar() {
         {user ? (
           <>
             <Link href="/profile" className="hover:underline text-sm">Profile</Link>
-            {user.isAdmin && <Link href="/admin" className="hover:underline text-sm">Admin</Link>}
+            {user.isAdmin && <Link href="/admin/users" className="hover:underline text-sm">Users</Link>}
             <button
               onClick={async () => {
                 await logout();
