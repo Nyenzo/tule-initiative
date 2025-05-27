@@ -33,27 +33,62 @@ export default function Careers() {
     fetchData();
   }, []);
 
-  if (loading) return <div className="min-h-screen bg-gray-100 p-8">Loading...</div>;
+  // Placeholder images for each section
+  const sectionImages = {
+    'Our Culture': {
+      url: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60',
+      alt: 'Team members collaborating in a vibrant office environment',
+    },
+    'Careers & Internships': {
+      url: 'https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60',
+      alt: 'A group of professionals discussing career opportunities',
+    },
+    'Explore Open Positions': {
+      url: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60',
+      alt: 'Job listings on a computer screen',
+    },
+    'Internships': {
+      url: 'https://images.unsplash.com/photo-1516321497487-e288fb19713f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60',
+      alt: 'Interns working together on a project',
+    },
+  };
+
+  if (loading) return <div className="min-h-screen bg-gradient-to-br from-blue-100 via-blue-50 to-yellow-50 p-8" role="status" aria-live="polite">Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <main className="min-h-screen bg-gradient-to-br from-blue-100 via-blue-50 to-yellow-50 p-8 pt-20" style={{ paddingTop: '80px' }}>
       <h1 className="text-3xl font-bold text-blue-800 mb-6">{pageData.title}</h1>
       {pageData.sections.map((section, index) => {
         if (!section.sectionTitle) {
           console.warn('Skipping section with missing sectionTitle:', section);
           return null;
         }
+        const isEven = index % 2 === 0;
+        const sectionId = section.sectionTitle.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-');
+        const image = sectionImages[section.sectionTitle] || { url: 'https://via.placeholder.com/400', alt: 'Placeholder image' };
+
         return (
           <section
             key={index}
-            id={section.sectionTitle.toLowerCase().replace(/\s+/g, '-')}
-            className="mb-8"
+            id={sectionId}
+            className="mb-8 flex flex-col md:flex-row items-center gap-6"
+            aria-labelledby={`section-title-${sectionId}`}
           >
-            <h2 className="text-2xl font-semibold text-yellow-300 mb-4">{section.sectionTitle}</h2>
-            <p className="text-gray-700 whitespace-pre-line">{section.sectionContent || 'No content available.'}</p>
+            <div className={`flex-1 ${isEven ? 'md:order-1' : 'md:order-2'}`}>
+              <h2 id={`section-title-${sectionId}`} className="text-2xl font-semibold text-yellow-400 mb-4">{section.sectionTitle}</h2>
+              <p className="text-gray-700 whitespace-pre-line">{section.sectionContent || 'No content available.'}</p>
+            </div>
+            <div className={`flex-1 ${isEven ? 'md:order-2' : 'md:order-1'}`}>
+              <img
+                src={image.url}
+                alt={image.alt}
+                className="w-full h-64 object-cover rounded-lg shadow-md"
+                loading="lazy"
+              />
+            </div>
           </section>
         );
       })}
-    </div>
+    </main>
   );
 }

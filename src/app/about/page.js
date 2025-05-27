@@ -64,10 +64,10 @@ export default function About() {
     },
   };
 
-  if (loading) return <div className="min-h-screen bg-gradient-to-br from-gray-100 via-blue-50 to-gray-200 p-8" role="status" aria-live="polite">Loading...</div>;
+  if (loading) return <div className="min-h-screen bg-gradient-to-br from-blue-100 via-blue-50 to-yellow-50 p-8" role="status" aria-live="polite">Loading...</div>;
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-gray-100 via-blue-50 to-gray-200 p-8 pt-20" style={{ paddingTop: '60px' }}>
+    <main className="min-h-screen bg-gradient-to-br from-blue-100 via-blue-50 to-yellow-50 p-8 pt-20" style={{ paddingTop: '80px' }}>
       <h1 className="text-3xl font-bold text-blue-800 mb-6">{pageData.title}</h1>
       {pageData.sections.map((section, index) => {
         const isEven = index % 2 === 0;
@@ -82,7 +82,7 @@ export default function About() {
             aria-labelledby={`section-title-${sectionId}`}
           >
             <div className={`flex-1 ${isEven ? 'md:order-1' : 'md:order-2'}`}>
-              <h2 id={`section-title-${sectionId}`} className="text-2xl font-semibold text-yellow-300 mb-4">{section.sectionTitle}</h2>
+              <h2 id={`section-title-${sectionId}`} className="text-2xl font-semibold text-yellow-400 mb-4">{section.sectionTitle}</h2>
               <p className="text-gray-700 whitespace-pre-line">{section.sectionContent}</p>
             </div>
             <div className={`flex-1 ${isEven ? 'md:order-2' : 'md:order-1'}`}>
