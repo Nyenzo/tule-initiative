@@ -56,7 +56,7 @@ export default function DonateButton({ isOpen, setIsOpen }) {
       return;
     }
     if (!amount || isNaN(amount) || amount <= 0) {
-      setError('Please enter a valid amount.');
+      setError('Please enter a valid amount in KES.');
       return;
     }
     if (!selectedMethod) {
@@ -76,7 +76,7 @@ export default function DonateButton({ isOpen, setIsOpen }) {
       }
       const donationData = {
         userId: user.uid,
-        amount: parseFloat(amount),
+        amount: parseFloat(amount), // Stored as KES value
         paymentMethod: selectedMethod,
         timestamp: serverTimestamp(),
         status: 'completed',
@@ -84,7 +84,7 @@ export default function DonateButton({ isOpen, setIsOpen }) {
       };
       console.log('Donation data before addDoc:', donationData);
       await addDoc(collection(db, 'donations'), donationData);
-      setSuccess('Donation confirmed and recorded!');
+      setSuccess('Donation of KSh ' + amount + ' confirmed and recorded!');
       setAmount('');
       setSelectedMethod(null); // Reset payment method selection
       setIsOpen(false); // Close the modal on successful donation
@@ -217,7 +217,7 @@ export default function DonateButton({ isOpen, setIsOpen }) {
               <form onSubmit={handleDonate} className="space-y-4">
                 <h3 className="text-lg font-semibold text-blue-800 mb-4">Donate with {selectedMethod}</h3>
                 <div className="mb-2">
-                  <label className="block text-gray-700" htmlFor="donateAmount">Amount</label>
+                  <label className="block text-gray-700" htmlFor="donateAmount">Amount (KSh)</label>
                   <input
                     id="donateAmount"
                     type="number"
@@ -226,13 +226,13 @@ export default function DonateButton({ isOpen, setIsOpen }) {
                     className="w-full p-1 border rounded"
                     min="1"
                     step="0.01"
-                    placeholder="Enter amount"
+                    placeholder="Enter amount in KES"
                     required
                     aria-required="true"
                     disabled={isConfirming || authLoading}
                     aria-describedby="donateAmountError"
                   />
-                  {error && amount && (isNaN(amount) || amount <= 0) && <span id="donateAmountError" className="text-red-500 text-sm">Invalid amount</span>}
+                  {error && amount && (isNaN(amount) || amount <= 0) && <span id="donateAmountError" className="text-red-500 text-sm">Invalid amount in KES</span>}
                 </div>
                 {/* Mock Payment Details: Display fields specific to the selected payment method */}
                 {selectedMethod === 'M-Pesa' && (

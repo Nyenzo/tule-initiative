@@ -37,7 +37,7 @@ export default function Donations() {
         }));
         setDonations(donationsList);
 
-        // Calculate total amount
+        // Calculate total amount in KES
         const total = donationsList.reduce((sum, d) => sum + (d.amount || 0), 0);
         setTotalAmount(total);
 
@@ -72,18 +72,18 @@ export default function Donations() {
   // Access Control: Return null if the user is not authenticated or not an admin
   if (!user || !user.isAdmin) return null;
 
-  // Donations Table Rendering: Display a table of donations with user names and total amount
+  // Donations Table Rendering: Display a table of donations with user names and total amount in KES
   return (
     <div className="min-h-screen bg-gray-100 p-8 pt-20" style={{ paddingTop: '80px' }}>
       <h1 className="text-3xl font-bold text-blue-800 mb-4">Donation Management</h1>
       {error && <p className="text-red-500 mb-4">{error}</p>}
-      <p className="mb-4">Total Donations: ${totalAmount.toFixed(2)}</p>
+      <p className="mb-4">Total Donations: KSh {totalAmount.toFixed(2)}</p>
       <div className="overflow-x-auto">
         <table className="w-full bg-white shadow-md rounded-lg">
           <thead>
             <tr className="bg-gray-200">
               <th className="p-2">User</th>
-              <th className="p-2">Amount</th>
+              <th className="p-2">Amount (KSh)</th>
               <th className="p-2">Payment Method</th>
               <th className="p-2">Date</th>
               <th className="p-2">Status</th>
@@ -94,7 +94,7 @@ export default function Donations() {
             {donations.map((donation) => (
               <tr key={donation.id} className="border-b">
                 <td className="p-2">{userNames[donation.userId] || 'Loading...'}</td>
-                <td className="p-2">${donation.amount.toFixed(2)}</td>
+                <td className="p-2">KSh {donation.amount.toFixed(2)}</td>
                 <td className="p-2">{donation.paymentMethod || 'N/A'}</td>
                 <td className="p-2">{donation.timestamp?.toDate().toLocaleString() || 'N/A'}</td>
                 <td className="p-2">{donation.status}</td>
