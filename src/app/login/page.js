@@ -54,42 +54,45 @@ export default function Login() {
     }
   };
 
-  if (loading) return <div className="min-h-screen bg-gray-100 p-8">Loading...</div>;
+  if (loading) return <div className="min-h-screen bg-gray-100 flex items-center justify-center">Loading...</div>;
   if (user) return null;
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-2xl font-bold text-blue-800 mb-4">Login</h1>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        <form onSubmit={handleEmailLogin}>
-          <div className="mb-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-blue-50 flex items-center justify-center">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h1 className="text-3xl font-bold text-blue-800 mb-6 text-center">Login</h1>
+        {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
+        <form onSubmit={handleEmailLogin} className="space-y-4">
+          <div>
             <label className="block text-gray-700">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 border rounded"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-500"
               required
             />
           </div>
-          <div className="mb-4">
+          <div>
             <label className="block text-gray-700">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 border rounded"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-purple-500"
               required
             />
           </div>
-          <button type="submit" className="bg-purple-600 text-white p-2 rounded w-full mb-2">
+          <button
+            type="submit"
+            className="w-full bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition-colors duration-200"
+          >
             Login with Email
           </button>
         </form>
         <button
           onClick={handleGoogleLogin}
-          className="bg-blue-600 text-white p-2 rounded w-full flex items-center justify-center gap-2"
+          className="w-full bg-blue-600 text-white py-3 rounded-lg flex items-center justify-center gap-2 mt-4 hover:bg-blue-700 transition-colors duration-200"
           disabled={googleLoading}
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">

@@ -19,7 +19,7 @@ export default function AdminDashboard() {
     }
   }, [user, loading, router]);
 
-  if (loading) return <div className="min-h-screen bg-gray-100 p-8">Loading...</div>;
+  if (loading) return <div className="min-h-screen bg-gray-100 flex items-center justify-center">Loading...</div>;
   if (!user || !user.isAdmin) return null;
 
   const handleSetAdmin = async (e) => {
@@ -37,35 +37,53 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <h1 className="text-3xl font-bold text-blue-800 mb-4">Admin Dashboard</h1>
-      <p className="text-gray-700 mb-4">Welcome, {user.name || 'Admin'}! You have admin privileges.</p>
-      <h2 className="text-xl font-semibold text-blue-800 mb-2">Assign Admin Role</h2>
-      {message && <p className="text-green-500 mb-4">{message}</p>}
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-      <form onSubmit={handleSetAdmin} className="bg-white p-6 rounded-lg shadow-lg max-w-md mb-6">
-        <div className="mb-4">
-          <label className="block text-gray-700">User Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border rounded"
-            required
-          />
+    <div className="min-h-screen bg-gray-50 p-8">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-4xl font-bold text-blue-800 mb-6">Admin Dashboard</h1>
+        <div className="bg-white p-6 rounded-lg shadow-lg mb-6">
+          <p className="text-xl text-gray-700 mb-4">Welcome, {user.name || 'Admin'}! You have admin privileges.</p>
         </div>
-        <button type="submit" className="bg-purple-600 text-white p-2 rounded w-full">
-          Make Admin
-        </button>
-      </form>
-      <h2 className="text-xl font-semibold text-blue-800 mb-2">Manage Users</h2>
-      <Link href="/admin/users" className="text-blue-600 hover:underline">
-        View User List
-      </Link>
-      <h2 className="text-xl font-semibold text-blue-800 mb-2 mt-4">Donations</h2>
-      <Link href="/donations" className="text-blue-600 hover:underline">
-        View Donations
-      </Link>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-2xl font-semibold text-blue-800 mb-4">Assign Admin Role</h2>
+            {message && <p className="text-green-500 mb-4">{message}</p>}
+            {error && <p className="text-red-500 mb-4">{error}</p>}
+            <form onSubmit={handleSetAdmin} className="space-y-4">
+              <div>
+                <label className="block text-gray-700">User Email</label>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full p-2 border rounded"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors duration-200 w-full"
+              >
+                Make Admin
+              </button>
+            </form>
+          </div>
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-2xl font-semibold text-blue-800 mb-4">Quick Links</h2>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/admin/users" className="text-blue-600 hover:underline">
+                  View User List
+                </Link>
+              </li>
+              <li>
+                <Link href="/donations" className="text-blue-600 hover:underline">
+                  View Donations
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
