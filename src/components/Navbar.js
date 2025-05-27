@@ -15,6 +15,7 @@ export default function Navbar() {
   const [isDonateOpen, setIsDonateOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const menuRef = useRef(null);
+  const donateRef = useRef(null); // Reference for the donation form to exclude it from outside clicks
 
   // Scroll Effect: Adjust navbar position based on scroll position by toggling between top-0 and top-4
   useEffect(() => {
@@ -32,10 +33,10 @@ export default function Navbar() {
     };
   }, []);
 
-  // Click Outside Handler: Close the mobile menu and donation popup when clicking outside the menu area
+  // Click Outside Handler: Close the mobile menu and donation popup when clicking outside their respective areas
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
+      if (menuRef.current && !menuRef.current.contains(event.target) && donateRef.current && !donateRef.current.contains(event.target)) {
         setIsOpen(false);
         setIsDonateOpen(false);
       }
@@ -53,11 +54,11 @@ export default function Navbar() {
   // Navigation Bar Structure: Render the navbar with logo, links, and conditional user/admin options
   return (
     <nav 
-      className={`fixed ${isScrolled ? 'top-0' : 'top-4'} left-0 right-0 mx-4 z-50 bg-blue-800 bg-opacity-90 text-yellow-300 p-2 sm:p-3 md:p-4 flex justify-between items-center rounded-lg shadow-lg transition-all duration-200`}
+      className={`fixed ${isScrolled ? 'top-0' : 'top-4'} left-0 right-0 mx-4 z-50 bg-blue-800 bg-opacity-90 text-yellow-300 flex justify-between items-center rounded-lg shadow-lg transition-all duration-200 px-0 py-2 sm:py-3 md:py-4`} // Removed left/right padding (px-0) to align logo
       style={{ height: '55px' }}
     >
-      {/* Logo Section: Display the Tule Initiative logo with a link to the homepage */}
-      <div className="flex items-center">
+      {/* Logo Section: Display the Tule Initiative logo aligned to the navbar start with curved left edges */}
+      <div className="rounded-l-lg overflow-hidden m-0"> {/* Removed any margin (m-0) to ensure logo starts at the edge */}
         <Link href="/">
           <Image src="/tule-logo.png" alt="Tule Initiative Logo" width={150} height={50} className="hover:opacity-90 transition-opacity duration-200" />
         </Link>
@@ -98,7 +99,7 @@ export default function Navbar() {
             </>
           )}
           {user?.isAdmin && <Link href="/donations" className="px-3 py-2 text-sm sm:text-base hover:bg-blue-900 hover:rounded-lg hover:shadow-md transition-colors duration-200 border-l border-blue-900">Donations</Link>}
-          <div className="border-l border-blue-900 px-3 py-2">
+          <div className="border-l border-blue-900 px-3 py-2" ref={donateRef}>
             <DonateButton isOpen={isDonateOpen} setIsOpen={setIsDonateOpen} />
           </div>
         </div>
