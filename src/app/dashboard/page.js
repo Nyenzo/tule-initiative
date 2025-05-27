@@ -23,7 +23,7 @@ export default function Dashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-blue-50 p-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold text-blue-800 mb-6">Dashboard</h1>
         <div className="bg-white p-6 rounded-lg shadow-lg">

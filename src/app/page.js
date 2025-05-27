@@ -2,11 +2,14 @@
 
 import Image from 'next/image';
 import DonateButton from '../components/DonateButton';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 
 export default function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isImageLoaded, setIsImageLoaded] = useState(true); // Start with true to show the first image
+  const [isDonateOpen, setIsDonateOpen] = useState(false); // State to control DonateButton modal
+  const impactRef = useRef(null);
 
   // Array of mission-related images (replace with your actual image paths)
   const missionImages = [
@@ -20,6 +23,14 @@ export default function Home() {
     },
     {
       src: '/mission-photo-3.jpg',
+      alt: 'Volunteers planting trees in a group',
+    },
+    {
+      src: '/mission-photo-4.png',
+      alt: 'Volunteers planting trees in a group',
+    },
+    {
+      src: '/mission-photo-5.jpeg',
       alt: 'Volunteers planting trees in a group',
     },
   ];
@@ -51,6 +62,36 @@ export default function Home() {
     };
   }, [missionImages.length]);
 
+  // Handle scroll-triggered animation for impact section
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const cards = entry.target.querySelectorAll('.impact-card');
+            cards.forEach((card, index) => {
+              setTimeout(() => {
+                card.classList.add('animate-pop-up');
+              }, index * 200); // Staggered animation
+            });
+            observer.unobserve(entry.target); // Stop observing after animation
+          }
+        });
+      },
+      { threshold: 0.5 } // Trigger when 50% of the section is visible
+    );
+
+    if (impactRef.current) {
+      observer.observe(impactRef.current);
+    }
+
+    return () => {
+      if (impactRef.current) {
+        observer.unobserve(impactRef.current);
+      }
+    };
+  }, []);
+
   return (
     <main className="min-h-screen bg-white" role="main">
       {/* Hero Section with Image and Description */}
@@ -69,7 +110,11 @@ export default function Home() {
             <p className="text-lg text-white mb-6 max-w-2xl mx-auto">
               Tule, meaning "let's eat" in Swahili, unites communities through talent and purpose. The community would come together and sow and in the end of a season feast together at the fruits of their labor. Tule basically uses the Dining Table aspect in a real life setting where we all come together to eat and enjoy the fruits of our work leaving no one behind.
             </p>
-            <DonateButton />
+            <Link href="/projects">
+              <button className="bg-yellow-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-yellow-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                Learn More
+              </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -96,23 +141,24 @@ export default function Home() {
           />
         </div>
       </section>
+
       {/* Our Impact Section */}
-      <section className="p-8 bg-gray-50" aria-labelledby="impact-title">
+      <section className="p-8 bg-gray-50" aria-labelledby="impact-title" ref={impactRef}>
         <div className="max-w-6xl mx-auto text-center">
           <h2 id="impact-title" className="text-3xl font-bold text-blue-800 mb-6">Our Impact</h2>
           <p className="text-lg text-gray-700 mb-6">
             Since our inception, Tule has empowered over 50 community members, cultivated 2 local projects, and hosted 2 feasts to celebrate collective efforts. Join us in making a difference!
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white p-4 rounded-lg shadow-md">
+            <div className="bg-white p-4 rounded-lg shadow-md impact-card opacity-0 translate-y-10">
               <h3 className="text-xl font-semibold text-blue-800">50+</h3>
               <p className="text-gray-600">Community Members Empowered</p>
             </div>
-            <div className="bg-white p-4 rounded-lg shadow-md">
+            <div className="bg-white p-4 rounded-lg shadow-md impact-card opacity-0 translate-y-10">
               <h3 className="text-xl font-semibold text-blue-800">2+</h3>
               <p className="text-gray-600">Local Projects</p>
             </div>
-            <div className="bg-white p-4 rounded-lg shadow-md">
+            <div className="bg-white p-4 rounded-lg shadow-md impact-card opacity-0 translate-y-10">
               <h3 className="text-xl font-semibold text-blue-800">2+</h3>
               <p className="text-gray-600">Community Feasts</p>
             </div>
@@ -127,10 +173,12 @@ export default function Home() {
           <p className="text-lg text-gray-700 mb-6">
             Whether you want to volunteer, donate, or partner with us, there are many ways to support Tule. Contact us today to get started!
           </p>
-          <DonateButton />
-          <button className="mt-4 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
-            Contact Us
-          </button>
+          <DonateButton isOpen={isDonateOpen} setIsOpen={setIsDonateOpen} />
+          <Link href="/contact">
+            <button className="mt-4 bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
+              Contact Us
+            </button>
+          </Link>
         </div>
       </section>
     </main>

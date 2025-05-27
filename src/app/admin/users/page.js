@@ -78,7 +78,7 @@ export default function AdminUsers() {
   if (!user.isAdmin) return <p className="p-4">You must be an admin to view this page.</p>;
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-blue-50 p-8">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-bold text-blue-800 mb-6">User List</h1>
         {success && <p className="text-green-500 mb-4">{success}</p>}

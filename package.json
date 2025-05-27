@@ -10,6 +10,7 @@
     "predeploy": "echo Skipping linting for Firebase Functions"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.7.2",
     "firebase": "^11.8.1",
     "firebase-admin": "^13.4.0",
     "next": "^15.3.2",
