@@ -1,7 +1,9 @@
 'use client';
 
+import { useState, useEffect, useRef } from 'react';
+
 export default function Contact() {
-  // Placeholder images for each section
+  const sectionRefs = useRef([]);
   const sectionImages = {
     'Contact Us': {
       url: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=60',
@@ -17,12 +19,39 @@ export default function Contact() {
     },
   };
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const img = entry.target.querySelector('img');
+            if (img && !img.classList.contains('animate-pop-up')) {
+              img.classList.add('animate-pop-up');
+            }
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    sectionRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => {
+      sectionRefs.current.forEach((ref) => {
+        if (ref) observer.unobserve(ref);
+      });
+    };
+  }, []);
+
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-100 via-blue-50 to-yellow-50 p-8 pt-20" style={{ paddingTop: '80px' }}>
       <h1 className="text-3xl font-bold text-blue-800 mb-6">Connect With Us</h1>
 
       {/* Contact Us Section */}
-      <section id="contact-us" className="mb-8 flex flex-col md:flex-row items-center gap-6" aria-labelledby="section-title-contact-us">
+      <section id="contact-us" ref={(el) => (sectionRefs.current[0] = el)} className="mb-8 flex flex-col md:flex-row items-center gap-6" aria-labelledby="section-title-contact-us">
         <div className="flex-1 md:order-1">
           <h2 id="section-title-contact-us" className="text-2xl font-semibold text-yellow-400 mb-4">Contact Us</h2>
           <p className="text-gray-700">
@@ -45,7 +74,7 @@ export default function Contact() {
       </section>
 
       {/* Tule in Your County Section */}
-      <section id="tule-in-your-county" className="mb-8 flex flex-col md:flex-row items-center gap-6" aria-labelledby="section-title-tule-in-your-county">
+      <section id="tule-in-your-county" ref={(el) => (sectionRefs.current[1] = el)} className="mb-8 flex flex-col md:flex-row items-center gap-6" aria-labelledby="section-title-tule-in-your-county">
         <div className="flex-1 md:order-2">
           <h2 id="section-title-tule-in-your-county" className="text-2xl font-semibold text-yellow-400 mb-4">Tule in Your County</h2>
           <p className="text-gray-700">
@@ -70,7 +99,7 @@ export default function Contact() {
       </section>
 
       {/* Report a Concern Section */}
-      <section id="report-a-concern" className="mb-8 flex flex-col md:flex-row items-center gap-6" aria-labelledby="section-title-report-a-concern">
+      <section id="report-a-concern" ref={(el) => (sectionRefs.current[2] = el)} className="mb-8 flex flex-col md:flex-row items-center gap-6" aria-labelledby="section-title-report-a-concern">
         <div className="flex-1 md:order-1">
           <h2 id="section-title-report-a-concern" className="text-2xl font-semibold text-yellow-400 mb-4">Report a Concern</h2>
           <p className="text-gray-700">

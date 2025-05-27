@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { db } from '../../lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
 export default function Careers() {
   const [pageData, setPageData] = useState({ title: '', sections: [] });
   const [loading, setLoading] = useState(true);
+  const sectionRefs = useRef([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,6 +54,33 @@ export default function Careers() {
     },
   };
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const img = entry.target.querySelector('img');
+            if (img && !img.classList.contains('animate-pop-up')) {
+              img.classList.add('animate-pop-up');
+            }
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    sectionRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => {
+      sectionRefs.current.forEach((ref) => {
+        if (ref) observer.unobserve(ref);
+      });
+    };
+  }, [pageData.sections]);
+
   if (loading) return <div className="min-h-screen bg-gradient-to-br from-blue-100 via-blue-50 to-yellow-50 p-8" role="status" aria-live="polite">Loading...</div>;
 
   return (
@@ -71,6 +99,7 @@ export default function Careers() {
           <section
             key={index}
             id={sectionId}
+            ref={(el) => (sectionRefs.current[index] = el)}
             className="mb-8 flex flex-col md:flex-row items-center gap-6"
             aria-labelledby={`section-title-${sectionId}`}
           >

@@ -4,12 +4,14 @@ import Image from 'next/image';
 import DonateButton from '../components/DonateButton';
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useAuth } from '../context/AuthContext';
 
 export default function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isImageLoaded, setIsImageLoaded] = useState(true); // Start with true to show the first image
   const [isDonateOpen, setIsDonateOpen] = useState(false); // State to control DonateButton modal
   const impactRef = useRef(null);
+  const { user } = useAuth();
 
   // Array of mission-related images (replace with your actual image paths)
   const missionImages = [
@@ -36,28 +38,27 @@ export default function Home() {
   ];
 
   useEffect(() => {
-    // Trigger fade-out before changing the image
-    setIsImageLoaded(false);
-    const timeout = setTimeout(() => {
-      setCurrentImageIndex((prevIndex) =>
-        prevIndex === missionImages.length - 1 ? 0 : prevIndex + 1
-      );
-      // Fade back in after the new image is set
-      setIsImageLoaded(true);
-    }, 500); // Short delay to allow fade-out
+    let timeoutId;
 
-    const interval = setInterval(() => {
-      setIsImageLoaded(false);
-      setTimeout(() => {
+    const handleImageTransition = () => {
+      setIsImageLoaded(false); // Start fade-out
+      timeoutId = setTimeout(() => {
         setCurrentImageIndex((prevIndex) =>
           prevIndex === missionImages.length - 1 ? 0 : prevIndex + 1
         );
-        setIsImageLoaded(true);
-      }, 500);
+        setIsImageLoaded(true); // Fade back in after new image is set
+      }, 500); // Duration of fade-out
+    };
+
+    const interval = setInterval(() => {
+      handleImageTransition();
     }, 15000); // Change image every 15 seconds
 
+    // Initial call to start the cycle
+    handleImageTransition();
+
     return () => {
-      clearTimeout(timeout);
+      clearTimeout(timeoutId);
       clearInterval(interval); // Cleanup on unmount
     };
   }, [missionImages.length]);
@@ -106,7 +107,9 @@ export default function Home() {
         />
         <div className="absolute inset-0 bg-blue-700 bg-opacity-75 flex items-center justify-center text-center p-4 pt-16">
           <div>
-            <h1 id="hero-title" className="text-4xl font-bold text-yellow-300 mb-4">Welcome to Tule Initiative</h1>
+            <h1 id="hero-title" className="text-4xl font-bold text-yellow-300 mb-4">
+              {user && user.displayName ? `Welcome ${user.displayName.split(' ')[0]} to Tule Initiative` : 'Welcome to Tule Initiative'}
+            </h1>
             <p className="text-lg text-white mb-6 max-w-2xl mx-auto">
               Tule, meaning "let's eat" in Swahili, unites communities through talent and purpose. The community would come together and sow and in the end of a season feast together at the fruits of their labor. Tule basically uses the Dining Table aspect in a real life setting where we all come together to eat and enjoy the fruits of our work leaving no one behind.
             </p>
@@ -135,7 +138,7 @@ export default function Home() {
             alt={missionImages[currentImageIndex].alt}
             width={500}
             height={550}
-            className="w-full h-auto object-cover rounded-lg transition-opacity duration-2000 ease-in-out"
+            className="w-full h-auto object-cover rounded-lg transition-opacity duration-1000 ease-in-out"
             style={{ opacity: isImageLoaded ? 1 : 0 }} // Control opacity with state
             loading="lazy"
           />

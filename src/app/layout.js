@@ -11,7 +11,7 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/favicon.ico" />
         {/* Add Font Awesome script */}
         <Script
-          src="https://kit.fontawesome.com/your-kit-id.js"
+          src="https://kit.fontawesome.com/0010d9344a.js"
           strategy="afterInteractive"
           crossOrigin="anonymous"
         />

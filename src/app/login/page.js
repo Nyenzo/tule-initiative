@@ -15,7 +15,7 @@ export default function Login() {
 
   useEffect(() => {
     if (!loading && user) {
-      router.push('/dashboard');
+      router.push('/');
     }
   }, [user, loading, router]);
 
@@ -24,7 +24,7 @@ export default function Login() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       logAnalyticsEvent('login', { method: 'email', user_id: auth.currentUser.uid });
-      router.push('/dashboard');
+      router.push('/');
     } catch (err) {
       setError(`Login failed: ${err.message}`);
       console.error('Login error:', err.code, err.message, err.stack);
@@ -39,7 +39,7 @@ export default function Login() {
       const provider = getGoogleProvider();
       const result = await signInWithPopup(auth, provider);
       logAnalyticsEvent('login', { method: 'google', user_id: result.user.uid });
-      router.push('/dashboard');
+      router.push('/');
     } catch (err) {
       if (err.code === 'auth/popup-blocked') {
         setError('Popup was blocked by the browser. Please allow popups for this site and try again.');

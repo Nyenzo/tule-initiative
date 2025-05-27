@@ -1,3 +1,4 @@
+// File: src/app/admin/users/page.js
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -6,12 +7,15 @@ import { db, logAnalyticsEvent } from '../../../lib/firebase';
 import { collection, query, getDocs, doc, setDoc, deleteDoc } from 'firebase/firestore';
 import Link from 'next/link';
 
+// AdminUsers Component: Manages the display and modification of user accounts for administrators
 export default function AdminUsers() {
+  // State Management: Initialize states for user authentication, user list, and form feedback
   const { user } = useAuth();
   const [users, setUsers] = useState([]);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  // Data Fetching: Retrieve the list of users from Firestore when the component mounts
   const fetchUsers = async () => {
     try {
       const q = query(collection(db, 'users'));
@@ -34,6 +38,7 @@ export default function AdminUsers() {
     fetchUsers();
   }, [user]);
 
+  // Admin Role Toggle: Handle the toggling of admin status for a specific user
   const handleToggleAdmin = async (userId, currentIsAdmin) => {
     if (!window.confirm(`Are you sure you want to ${currentIsAdmin ? 'remove admin status from' : 'make admin'} user ${userId}?`)) {
       return;
@@ -51,6 +56,7 @@ export default function AdminUsers() {
     }
   };
 
+  // User Deletion: Handle the deletion of a user account with confirmation
   const handleDeleteUser = async (userId) => {
     if (userId === user.uid) {
       setError('You cannot delete your own account from this page.');
@@ -74,11 +80,13 @@ export default function AdminUsers() {
     }
   };
 
+  // Access Control: Display messages based on user authentication and admin status
   if (!user) return <p className="p-4">Please log in to view users.</p>;
   if (!user.isAdmin) return <p className="p-4">You must be an admin to view this page.</p>;
 
+  // User List Rendering: Display the table of users with actions for admin toggling and deletion
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-blue-50 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-blue-50 p-8 pt-20" style={{ paddingTop: '80px' }}>
       <div className="max-w-6xl mx-auto">
         <h1 className="text-3xl font-bold text-blue-800 mb-6">User List</h1>
         {success && <p className="text-green-500 mb-4">{success}</p>}
