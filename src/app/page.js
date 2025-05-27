@@ -17,7 +17,7 @@ export default function Home() {
           <div>
             <h1 className="text-4xl font-bold text-yellow-300 mb-4">Welcome to Tule Initiative</h1>
             <p className="text-lg text-white mb-6 max-w-2xl mx-auto">
-              Tule, meaning "let's eat" in Swahili, unites communities through talent and purpose. [Add your description here.]
+              Tule, meaning "let's eat" in Swahili, unites communities through talent and purpose. The community would come together and sow and in the end of a season feast together at the fruits of their labor. Tule basically uses the Dining Table aspect in a real life setting where we all come together to eat and enjoy the fruits of our work leaving no one behind.
             </p>
             <DonateButton />
           </div>
