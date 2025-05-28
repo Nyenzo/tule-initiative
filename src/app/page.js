@@ -1,3 +1,4 @@
+// File: src/app/page.js
 'use client';
 
 import Image from 'next/image';
@@ -6,6 +7,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useAuth } from '../context/AuthContext';
 
+// Home Component: Main landing page with hero, mission, impact, and involvement sections
 export default function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isImageLoaded, setIsImageLoaded] = useState(true); // Start with true to show the first image
@@ -95,37 +97,39 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-white" role="main">
-      {/* Hero Section with Image and Description */}
-      <section className="relative" aria-labelledby="hero-title">
+      {/* Hero Section: Stretches to the top with text positioned lower and button adjusted */}
+      <section className="relative h-[400px] sm:h-[500px] md:h-[600px]" aria-labelledby="hero-title">
         <Image
           src="/hero-image.jpg"
           alt="Tule Initiative Hero Image"
           width={1200}
           height={600}
-          className="w-full h-96 object-cover"
+          className="w-full h-full object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-blue-700 bg-opacity-75 flex items-center justify-center text-center p-4 pt-16">
-          <div>
-            <h1 id="hero-title" className="text-4xl font-bold text-yellow-300 mb-4">
+        <div className="absolute inset-0 bg-blue-700 bg-opacity-75 flex items-start justify-center text-center pt-20 p-4">
+          <div className="max-w-xl mx-auto">
+            <h1 id="hero-title" className="text-3xl sm:text-4xl md:text-5xl font-bold text-yellow-300 mb-4">
               {user && user.displayName ? `Welcome ${user.displayName.split(' ')[0]} to Tule Initiative` : 'Welcome to Tule Initiative'}
             </h1>
-            <p className="text-lg text-white mb-6 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-white mb-6">
               Tule, meaning "let's eat" in Swahili, unites communities through talent and purpose. The community would come together and sow and in the end of a season feast together at the fruits of their labor. Tule basically uses the Dining Table aspect in a real life setting where we all come together to eat and enjoy the fruits of our work leaving no one behind.
             </p>
-            <Link href="/projects">
-              <button className="bg-yellow-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-yellow-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400">
-                Learn More
-              </button>
-            </Link>
+            <div className="mt-6">
+              <Link href="/projects">
+                <button className="bg-yellow-500 text-white font-semibold py-2 px-4 rounded-lg hover:bg-yellow-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400">
+                  Learn More
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Mission Section */}
-      <section className="p-8 flex flex-col md:flex-row items-center justify-between" aria-labelledby="mission-title">
+      {/* Mission Section: Separated with clear padding and layout */}
+      <section className="p-4 sm:p-8 flex flex-col md:flex-row items-center justify-between" aria-labelledby="mission-title">
         <div className="md:w-1/2 p-4">
-          <h2 id="mission-title" className="text-3xl font-bold text-blue-800 mb-4">Our Mission</h2>
+          <h2 id="mission-title" className="text-2xl sm:text-3xl font-bold text-blue-800 mb-4">Our Mission</h2>
           <p className="text-lg text-gray-700">
             Tule brings together people from diverse backgrounds to nurture their God-given talents,
             fostering unity and addressing social challenges through community-driven projects.
